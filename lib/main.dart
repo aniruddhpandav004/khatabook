@@ -9,7 +9,7 @@ void main() {
   runApp(
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: 'third',
+      initialRoute: '/',
       routes: {
         '/' : (context)=> SpleshScreen(),
         'second' : (context)=> DataScreen(),
