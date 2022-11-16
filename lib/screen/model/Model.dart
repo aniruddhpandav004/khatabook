@@ -4,3 +4,9 @@ class DataModel
 
   DataModel({this.id,this.name, this.mobile,this.address});
 }
+class Datatime
+{
+  String? time,date;
+
+  Datatime({this.time, this.date});
+}

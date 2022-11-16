@@ -22,15 +22,10 @@ class _ClientScreenState extends State<ClientScreen> {
     dataController.booklist.value = await db.readData();
   }
   void productgetdata() async {
-    dataController.productList.value =
-    await db.productreadData();
-
-
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
     productgetdata();
@@ -184,8 +179,14 @@ class _ClientScreenState extends State<ClientScreen> {
                   itemCount: dataController.productList.value.length,
                   itemBuilder: (context, index) {
                     return ListTile(
+                      leading: Column(
+                        children: [
+                          Text("${dataController.productList[index]['date']}"),
+                          Text("${dataController.productList[index]['time']}"),
+                        ],
+                      ),
                       title: Text(""),
-                      subtitle: Text(""),
+                      subtitle: Text("pandav"),
                       trailing: Row(
                         children: [
                           Container(
@@ -198,11 +199,11 @@ class _ClientScreenState extends State<ClientScreen> {
                             height: 95,
                             width: 95,
                             color: Color(0xffc5e1a4),
-                            child: Text(""),
+                            child: Text("123"),
                           )
                         ],
                       ),
-                    ),
+                    );
                   },
                 ),
               ),

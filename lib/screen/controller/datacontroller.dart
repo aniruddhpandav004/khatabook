@@ -8,10 +8,10 @@ class DataController extends GetxController
 
   RxList<Map> productList = <Map>[].obs;
 
-  // var date = DateTime.now();
-  //
-  // void getData(dynamic date1)
-  // {
-  //   date = date1;
-  // }
+  var date = DateTime.now();
+
+  void getData(dynamic date)
+  {
+    date = date;
+  }
 }

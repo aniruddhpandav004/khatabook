@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:khatabook/screen/controller/datacontroller.dart';
-
+import 'package:intl/intl.dart';
 import '../../utils/database.dart';
 
 class GaveScreen extends StatefulWidget {
@@ -12,17 +12,17 @@ class GaveScreen extends StatefulWidget {
 }
 
 class _GaveScreenState extends State<GaveScreen> {
-  TextEditingController? txtxproduct = TextEditingController();
-  TextEditingController? txtamount = TextEditingController();
-  TextEditingController? txtdate = TextEditingController();
-  TextEditingController? txttime = TextEditingController();
+  TextEditingController txtxproduct = TextEditingController();
+  TextEditingController txtamount = TextEditingController();
+  TextEditingController txtdate = TextEditingController();
+  TextEditingController txttime = TextEditingController();
 
   DataController dataController = Get.put(DataController());
 
   DbHelper db = DbHelper();
 
   void getData() async {
-    dataController.productList.value = await db.productreadData();
+    dataController.productList.value = await db.productreadData(id : dataController.data!.id!);
   }
 
   @override
@@ -31,6 +31,7 @@ class _GaveScreenState extends State<GaveScreen> {
     super.initState();
     getData();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -57,7 +58,9 @@ class _GaveScreenState extends State<GaveScreen> {
                   prefixIcon: Icon(Icons.person),
                 ),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               TextField(
                 controller: txtamount,
                 decoration: InputDecoration(
@@ -70,12 +73,15 @@ class _GaveScreenState extends State<GaveScreen> {
                   prefixIcon: Icon(Icons.currency_rupee),
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Align(
                 alignment: Alignment.topLeft,
                 child: Text(
                   "     * Required",
-                  style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                 ),
               ),
               SizedBox(height: 20),
@@ -88,10 +94,15 @@ class _GaveScreenState extends State<GaveScreen> {
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(width: 2, color: Colors.blue),
                   ),
-                  prefixIcon: Icon(Icons.calendar_month),
+                  prefixIcon: InkWell(
+                    onTap: datepicker,
+                    child: Icon(Icons.calendar_month),
+                  ),
                 ),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               TextField(
                 controller: txttime,
                 decoration: InputDecoration(
@@ -101,12 +112,19 @@ class _GaveScreenState extends State<GaveScreen> {
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(width: 2, color: Colors.blue),
                   ),
-                  prefixIcon: Icon(Icons.calendar_month),
+                  prefixIcon: InkWell(
+                    onTap: timepicker,
+                    child: Icon(Icons.calendar_month),
+                  ),
                 ),
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  db.productinsertData(txtxproduct.text, txtamount.text, txtdate.text, txttime.text, int.parse(dataController.data!.id!), 1);
+                  getData();
+                  Get.back();
+                  },
                 child: Text("SAVE"),
               ),
             ],
@@ -114,5 +132,31 @@ class _GaveScreenState extends State<GaveScreen> {
         ),
       ),
     );
+  }
+
+  void datepicker() async {
+    var date = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2005),
+        lastDate: DateTime(3010));
+    dataController.getData(date);
+    if (date != null) {
+      txtdate!.text = DateFormat('dd-MM-yyyy').format(date);
+    }
+  }
+
+  void timepicker() async {
+    TimeOfDay? t1 =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+
+    if (t1 != null) {
+      DateTime parsedtime =
+          DateFormat.jm().parse(t1.format(context).toString());
+
+      String formetdtime = DateFormat('hh:mm').format(parsedtime);
+
+      txttime!.text = formetdtime;
+    }
   }
 }
