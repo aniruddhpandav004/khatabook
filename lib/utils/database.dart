@@ -1,135 +1,86 @@
-// import 'dart:io';
-// import 'package:path/path.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:sqflite/sqflite.dart';
-//
-// class DbHelper {
-//   Database? db;
-//
-//   Future<Database> check() async {
-//     if (db != null) {
-//       return db!;
-//     } else {
-//       return await create();
-//     }
-//   }
-//
-//   Future<Database> create() async {
-//     Directory folder = await getApplicationDocumentsDirectory();
-//     String path = join(folder.path, "Student.db");
-//     return openDatabase(path, version: 1, onCreate: (db, version) {
-//       String query =
-//           "CREATE TABLE khatabook(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,std TEXT,mobile TEXT)";
-//       db.execute(query);
-//     });
-//   }
-//
-//   void insertData(String n1, String m1, String s1) async {
-//     db = await check();
-//     db!.insert("khatabook", {"name": n1, "mobile": m1, "std": s1});
-//   }
-//   Future<List<Map>> readData()async{
-//     db = await check();
-//     String query = "SELECT * FROM khatabook";
-//     List<Map> booklist = await db!.rawQuery(query,null);
-//     return booklist;
-//   }
-//   void deleteData(String id)async{
-//     db = await check();
-//     db!.delete("khatabook",where: "id = ?",whereArgs:[int.parse(id)]);
-//   }
-//
-//   void updateData(String id,String n1,String s1,String m1)async{
-//     db = await check();
-//     db!.update("khatabook", {"name":n1,"mobile":m1,"std": s1},where: "id = ?",whereArgs: [int.parse(id)]);
-//   }
-// }
-
 import 'dart:io';
-
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 
 class DbHelper {
-  Database?db;
+  Database? _db;
 
-  Future<Database> check() async {
-    if (db != null) {
-      return db!;
-    }
-    else {
-      return await createDatabase();
+  Future<Database> Check_db() async {
+    if (_db != null) {
+      return _db!;
+    } else {
+      return await Create_db();
     }
   }
 
-  Future<Database> createDatabase() async {
-    Directory folder = await getApplicationDocumentsDirectory();
-    String path = join(folder.path, "rnw.db");
-    return openDatabase(path, version: 1, onCreate: (db, version) {
+  Future<Database> Create_db() async {
+    Directory _folder = await getApplicationDocumentsDirectory();
+    String _path = join(_folder.path, 'rojmel.db');
+    return openDatabase(_path, version: 1, onCreate: (_db, version) {
       String query =
-          "CREATE TABLE khatabook(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,address TEXT,mobile TEXT)";
-      String query1 =
-          "CREATE TABLE product(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,amount TEXT,date TEXT,time TEXT,client_id INTEGER,payment_status INTEGER)";
-      db.execute(query1);
-      db.execute(query);
+          'CREATE TABLE cus(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, mobile TEXT, address TEXT)';
+      String proquery =
+          "CREATE TABLE product(id INTEGER PRIMARY KEY AUTOINCREMENT,productname TEXT,quantity TEXT,price TEXT,purchasedate TEXT,client_id INTEGER,payment_status INTEGER)";
+
+      _db.execute(proquery);
+      _db.execute(query);
     });
   }
-  void insertData(String n1, String m1, String a1) async {
-    db = await check();
-    db!.insert("khatabook", {'name': n1, 'mobile': m1, 'address': a1});
+
+  void insertData(
+      String n1,
+      String m1,
+      String a1,
+      ) async {
+    _db = await Check_db();
+    _db!.insert('cus', {'name': n1, 'mobile': m1, "address": a1});
   }
 
   Future<List<Map>> readData() async {
-    db = await check();
-    String query = "SELECT * FROM khatabook";
-    List<Map> booklist = await db!.rawQuery(query, null);
-    return booklist;
+    _db = await Check_db();
+    String _query = "SELECT * FROM cus";
+    List<Map> CusList = await _db!.rawQuery(_query, null);
+
+    return CusList;
   }
+
   void deleteData(String id) async {
-    db = await check();
-    db!.delete('khatabook', where: 'id=?', whereArgs: [int.parse(id)]);
+    _db = await Check_db();
+    _db!.delete('cus', where: 'id = ?', whereArgs: [int.parse(id)]);
   }
 
-  void updateData(String id, String n1, String a1, String m1) async {
-    db = await check();
-    db!.update('khatabook', {'name': n1, 'mobile': m1, "address": a1},
-        where: 'id=?', whereArgs: [int.parse(id)]);
+  void updateData(String n1, String m1, String a1, String id) async {
+    _db = await Check_db();
+    _db!.update('cus', {'name': n1, 'mobile': m1, "address": a1},
+        where: 'id = ?', whereArgs: [int.parse(id)]);
+  }
+  Future<List<Map>> ProreadData(String id)async{
+    _db= await Check_db( );
+    String query = "SELECT * FROM product where client_id = $id";
+    List<Map> ProductList = await _db!.rawQuery(query,null);
+    return ProductList;
   }
 
-  void productinsertData(String n1, String a1, String d1,String t1,int clientId,int status) async {
-    db = await check();
-    db!.insert("product", {"name": n1, "amount":a1, "date": d1, "time": t1,"client_id":clientId,"payment_status":status});
+  Future<List<Map>> ProreadDataread()async{
+    _db= await Check_db( );
+    String query = "SELECT * FROM product";
+    List<Map> ProductList = await _db!.rawQuery(query,null);
+    return ProductList;
   }
 
-  // Future<List<Map>> productreadData(String id) async {
-  //   db = await check();
-  //   String query = "SELECT * FROM product where client_id = $id";
-  //   List<Map> productlist = await db!.rawQuery(query, null);
-  //
-  //   return productlist;
-  // }
-  Future<List<Map>> productreadData({String? id}) async {
-    db = await check();
-    String query = "";
-    if (id != null)
-      query = "SELECT * FROM product where client_id = $id";
-    else
-      query = "SELECT * FROM product";
-
-    List<Map> productlist = await db!.rawQuery(query, null);
-
-    return productlist;
+  void ProinsertData(String n1,String q1 ,String p1,String pq,int clientId,int status)async{
+    _db =  await Check_db();
+    _db!.insert("product", {"productname":n1,"quantity":q1,"price":p1,"purchasedate":pq,"client_id":clientId,"payment_status":status});
   }
 
-  void productdeleteData(String id) async {
-    db = await check();
-    db!.delete("product", where: "id = ?", whereArgs: [int.parse(id)]);
+  void Prodeletedata(String id)async{
+    _db= await Check_db();
+    _db!.delete("product",where: "id = ?",whereArgs: [int.parse(id)]);
   }
 
-  void productupdateData(String id, String n1, String a1, String d1,String t1) async {
-    db = await check();
-    db!.update("product", { "date": d1, "time": t1,"name": n1, "amount":a1,},
-        where: "id = ?", whereArgs: [int.parse(id)]);
+  void Proupdatedata(String id,String n1, String q1,String p1,String pq,int clientId,int status)async{
+    _db= await Check_db();
+    _db!.update("product", {"productname":n1,"quantity":q1,"price":p1,"purchasedate":pq,"client_id":clientId,"payment_status":status},where:"id = ?",whereArgs: [int.parse(id)]);
   }
 }

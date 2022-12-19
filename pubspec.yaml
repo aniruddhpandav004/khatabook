@@ -38,6 +38,7 @@ dependencies:
   sqflite: any
   path_provider: ^2.0.11
   intl: ^0.17.0
+  url_launcher: any
 
 dev_dependencies:
   flutter_test:
