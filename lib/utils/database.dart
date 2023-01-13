@@ -16,10 +16,10 @@ class DbHelper {
 
   Future<Database> Create_db() async {
     Directory _folder = await getApplicationDocumentsDirectory();
-    String _path = join(_folder.path, 'rojmel.db');
+    String _path = join(_folder.path, 'khatabook.db');
     return openDatabase(_path, version: 1, onCreate: (_db, version) {
       String query =
-          'CREATE TABLE cus(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, mobile TEXT, address TEXT)';
+          'CREATE TABLE abc(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, mobile TEXT, address TEXT)';
       String proquery =
           "CREATE TABLE product(id INTEGER PRIMARY KEY AUTOINCREMENT,productname TEXT,quantity TEXT,price TEXT,purchasedate TEXT,client_id INTEGER,payment_status INTEGER)";
 
@@ -34,12 +34,12 @@ class DbHelper {
       String a1,
       ) async {
     _db = await Check_db();
-    _db!.insert('cus', {'name': n1, 'mobile': m1, "address": a1});
+    _db!.insert('abc', {'name': n1, 'mobile': m1, "address": a1});
   }
 
   Future<List<Map>> readData() async {
     _db = await Check_db();
-    String _query = "SELECT * FROM cus";
+    String _query = "SELECT * FROM abc";
     List<Map> CusList = await _db!.rawQuery(_query, null);
 
     return CusList;
@@ -47,12 +47,12 @@ class DbHelper {
 
   void deleteData(String id) async {
     _db = await Check_db();
-    _db!.delete('cus', where: 'id = ?', whereArgs: [int.parse(id)]);
+    _db!.delete('abc', where: 'id = ?', whereArgs: [int.parse(id)]);
   }
 
   void updateData(String n1, String m1, String a1, String id) async {
     _db = await Check_db();
-    _db!.update('cus', {'name': n1, 'mobile': m1, "address": a1},
+    _db!.update('abc', {'name': n1, 'mobile': m1, "address": a1},
         where: 'id = ?', whereArgs: [int.parse(id)]);
   }
   Future<List<Map>> ProreadData(String id)async{
